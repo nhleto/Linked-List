@@ -18,7 +18,7 @@ class LinkedList
     @size = 0
   end
 
-  def sizes
+  def size
     current_node = @head
     until current_node.nil?
       current_node = current_node.next_node
@@ -38,7 +38,19 @@ class LinkedList
     @tail = node
   end
 
-  def prepends(value)
+  def contains?(value)
+    return nil if @head.nil?
+
+    current = @head
+    until current.nil?
+      return true if current.value == value
+
+      current = current.next_node
+    end
+    false
+  end
+
+  def prepend(value)
     # adds a new node containing .value to the start of the list
     node = Node.new(value)
     node.next_node = @head
@@ -50,16 +62,44 @@ class LinkedList
 
   def at(index)
     # returns the node at the given index
+    current_index = 0
+    current_node = @head
+    until index == current_index || current_node.nil?
+      current_node = current_node.next_node
+      current_index += 1
+    end
+    return if current_node.nil?
+
+    current_node
   end
 
-  def pops
-    # removes the last element from the list
-    @size -= 1
+  def find(value)
+    current_index = 0
     current_node = @head
     until current_node.nil?
+      return current_index if current_node.value == value
+
       current_node = current_node.next_node
+      current_index += 1
     end
-    current_node.next_node = current_node.next_node.next_node
+  end
+
+  def pop
+    # removes the last element from the list
+    return nil if @head.nil?
+
+    current = @head
+    if @head.next_node.nil?
+      @head = nil
+      @tail = nil
+      result = current
+    else
+      current = current.next_node until current.next_node.next_node.nil?
+      @tail = current
+      result = current.next_node
+      current.next_node = nil
+    end
+    result
   end
 
   def to_string
@@ -80,11 +120,12 @@ class LinkedList
 end
 
 nodes = LinkedList.new
-nodes.append('1')
+nodes.append(1)
 nodes.append('2')
-nodes.append('3')
-nodes.append('4')
+nodes.append(3)
+nodes.append('four')
+nodes.prepend('11')
 
-nodes.pops
-nodes.sizes
+p nodes.contains?('four')
+
 puts nodes.to_string
